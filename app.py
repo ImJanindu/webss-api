@@ -26,7 +26,6 @@ def ss(url):
         browser.get(abc)
         sleep(2)
         browser.get_screenshot_as_file("static/screenshot.png")
-        browser.quit()
         
         return render_template("ss.html")
     except:
