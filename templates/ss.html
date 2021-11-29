@@ -1,22 +1,26 @@
-<!DOCTYPE html>
 <html>
 <head>
-	<title>WebSS - Jaguar APIs</title>
-  
-	<style>
-		body{ margin:0px }
-		div#middle > div{ float:left; width:100%; }
-		div#middle > div > div > img{ width:100%; }
-	</style>
+    <title>WebSS - Jaguar APIs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .imgbox {
+            display: grid;
+            height: 100%;
+        }
+        .center-fit {
+            max-width: 100%;
+            max-height: 100vh;
+            margin: auto;
+        }
+    </style>
 </head>
-
 <body>
-  <div id="middle">
-		<div>
-			<div>
-				<img src="/static/screenshot.png" alt="screenshot">
-			</div>
-		</div>
-	</div>
- </body>
+<body style="background-color:black;">
+<div class="imgbox">
+    <img class="center-fit" src="static/screenshot.png">
+</div>
+</body>
 </html>
