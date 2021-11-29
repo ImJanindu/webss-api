@@ -21,7 +21,8 @@ def index():
 @app.route('/<url>')
 def ss(url):
     try:
-        browser.get(url)
+        abc = "https://" + url
+        browser.get(abc)
         sleep(2)
         browser.get_screenshot_as_file("static/screenshot.png")
         browser.quit()
