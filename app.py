@@ -22,6 +22,7 @@ def index():
 def ss(url):
     try:
         abc = "https://" + url
+        browser.set_window_size(1920, 1080)
         browser.get(abc)
         sleep(2)
         browser.get_screenshot_as_file("static/screenshot.png")
