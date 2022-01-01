@@ -30,7 +30,7 @@ def ss(url):
         response = upload_file("static/screenshot.png")
         return f"https://telegra.ph{response[0]}"
     except:
-        return "Website does not exist!"
+        return "None"
 
 
 if __name__ == "__main__":
