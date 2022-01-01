@@ -2,6 +2,7 @@ import os
 import sys
 from time import sleep
 from selenium import webdriver
+from telegraph import upload_file
 from selenium.webdriver.chrome.options import Options
 from flask import Flask, request, render_template
 
@@ -26,8 +27,8 @@ def ss(url):
         browser.get(abc)
         sleep(2)
         browser.get_screenshot_as_file("static/screenshot.png")
-        
-        return render_template("ss.html")
+        response = upload_file("static/screenshot.png")
+        return f"https://telegra.ph{response[0]}"
     except:
         return "Website does not exist!"
 
