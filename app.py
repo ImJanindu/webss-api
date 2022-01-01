@@ -4,7 +4,7 @@ from time import sleep
 from selenium import webdriver
 from telegraph import upload_file
 from selenium.webdriver.chrome.options import Options
-from flask import Flask, request
+from flask import Flask
 
 app = Flask(__name__)
 
