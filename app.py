@@ -17,7 +17,7 @@ browser = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), 
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return "Hemlo!"
 
 @app.route('/<url>')
 def ss(url):
