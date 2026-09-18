@@ -35,13 +35,35 @@ The API will directly return the raw `image/png` file. The image will render sea
 
 ## 🛠️ Local Setup Instructions
 
+You can run this project locally using **Docker** (recommended) or a standard Python environment.
+
+### Option A: Using Docker (Recommended)
+Docker handles all system dependencies (like Google Chrome) automatically so you don't have to install them on your machine.
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/your-username/webss-api.git
+   cd webss-api
+   ```
+2. **Build the Docker Image:**
+   ```bash
+   docker build -t webss-api .
+   ```
+3. **Run the Container:**
+   ```bash
+   docker run -d -p 5000:5000 --name webss-container webss-api
+   ```
+   The API will be available at `http://localhost:5000`.
+
+### Option B: Using Python (Standard)
+
 1. **Install Python and Google Chrome:** Ensure you have Python 3 and the Google Chrome browser installed on your computer.
 2. **Clone the Repository:**
    ```bash
    git clone https://github.com/your-username/webss-api.git
    cd webss-api
    ```
-3. **Create a Virtual Environment (Recommended):**
+3. **Create a Virtual Environment:**
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows use: venv\Scripts\activate
