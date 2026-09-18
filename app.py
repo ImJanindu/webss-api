@@ -28,7 +28,8 @@ def ss(url):
         browser.get(abc)
         sleep(2)
         
-        filename = f"static/screenshot_{uuid.uuid4().hex}.png"
+        os.makedirs("screenshots", exist_ok=True)
+        filename = f"screenshots/screenshot_{uuid.uuid4().hex}.png"
         browser.get_screenshot_as_file(filename)
         response = upload_file(filename)
         browser.quit()
