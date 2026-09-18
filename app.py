@@ -7,16 +7,19 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from telegraph import upload_file
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Hemlo!"
+    return jsonify({
+        "success": True, 
+        "message": "WebSS-API is running!"
+    })
 
 @app.route('/<url>')
-def ss(url):
+def take_screenshot(url):
     try:
         chrome_options = Options()
         if os.environ.get("GOOGLE_CHROME_BIN"):
@@ -28,27 +31,38 @@ def ss(url):
         service = Service(ChromeDriverManager().install())
         browser = webdriver.Chrome(service=service, options=chrome_options)
 
-        abc = "https://" + url
+        target_url = "https://" + url
         browser.set_window_size(1920, 1080)
-        browser.get(abc)
+        browser.get(target_url)
         sleep(2)
         
         os.makedirs("screenshots", exist_ok=True)
-        filename = f"screenshots/screenshot_{uuid.uuid4().hex}.png"
-        browser.get_screenshot_as_file(filename)
-        response = upload_file(filename)
+        screenshot_path = f"screenshots/screenshot_{uuid.uuid4().hex}.png"
+        browser.get_screenshot_as_file(screenshot_path)
+        
+        telegraph_response = upload_file(screenshot_path)
         browser.quit()
         
-        if os.path.exists(filename):
-            os.remove(filename)
+        if os.path.exists(screenshot_path):
+            os.remove(screenshot_path)
             
-        return f"https://telegra.ph{response[0]}"
+        return jsonify({
+            "success": True,
+            "url": target_url,
+            "image_url": f"https://telegra.ph{telegraph_response[0]}"
+        }), 200
+
     except Exception as e:
         if 'browser' in locals():
             browser.quit()
-        if 'filename' in locals() and os.path.exists(filename):
-            os.remove(filename)
-        return "None"
+        if 'screenshot_path' in locals() and os.path.exists(screenshot_path):
+            os.remove(screenshot_path)
+            
+        return jsonify({
+            "success": False,
+            "error": "Failed to capture screenshot or upload image.",
+            "details": str(e)
+        }), 500
 
 
 if __name__ == "__main__":
