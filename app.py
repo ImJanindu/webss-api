@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 from time import sleep
 from selenium import webdriver
 from telegraph import upload_file
@@ -26,13 +27,21 @@ def ss(url):
         browser.set_window_size(1920, 1080)
         browser.get(abc)
         sleep(2)
-        browser.get_screenshot_as_file("static/screenshot.png")
-        response = upload_file("static/screenshot.png")
+        
+        filename = f"static/screenshot_{uuid.uuid4().hex}.png"
+        browser.get_screenshot_as_file(filename)
+        response = upload_file(filename)
         browser.quit()
+        
+        if os.path.exists(filename):
+            os.remove(filename)
+            
         return f"https://telegra.ph{response[0]}"
     except Exception as e:
         if 'browser' in locals():
             browser.quit()
+        if 'filename' in locals() and os.path.exists(filename):
+            os.remove(filename)
         return "None"
 
 
