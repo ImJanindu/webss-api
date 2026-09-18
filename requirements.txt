@@ -1,5 +1,4 @@
 Flask==3.0.0
 gunicorn==21.2.0
 selenium==4.15.2
-telegraph==2.2.0
 webdriver-manager==4.0.1

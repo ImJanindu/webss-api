@@ -2,11 +2,9 @@ import os
 import sys
 import uuid
 from time import sleep
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from telegraph import upload_file
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -28,8 +26,7 @@ def take_screenshot(url):
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--no-sandbox")
         
-        service = Service(ChromeDriverManager().install())
-        browser = webdriver.Chrome(service=service, options=chrome_options)
+        browser = webdriver.Chrome(options=chrome_options)
 
         if url.startswith("http://") or url.startswith("https://"):
             target_url = url
@@ -44,16 +41,32 @@ def take_screenshot(url):
         screenshot_path = f"screenshots/screenshot_{uuid.uuid4().hex}.png"
         browser.get_screenshot_as_file(screenshot_path)
         
-        telegraph_response = upload_file(screenshot_path)
+        if not os.path.exists(screenshot_path) or os.path.getsize(screenshot_path) == 0:
+            raise Exception("Screenshot capture failed or file is empty.")
+
+        with open(screenshot_path, 'rb') as f:
+            # Catbox API requires 'reqtype' and 'fileToUpload'
+            upload_req = requests.post(
+                'https://catbox.moe/user/api.php', 
+                data={'reqtype': 'fileupload'},
+                files={'fileToUpload': f}
+            )
+            
         browser.quit()
         
         if os.path.exists(screenshot_path):
             os.remove(screenshot_path)
             
+        # Catbox returns the direct URL as plain text on success
+        if upload_req.status_code == 200 and upload_req.text.startswith("https://"):
+            image_url = upload_req.text
+        else:
+            raise Exception(f"Catbox upload failed: {upload_req.text}")
+            
         return jsonify({
             "success": True,
             "url": target_url,
-            "image_url": f"https://telegra.ph{telegraph_response[0]}"
+            "image_url": image_url
         }), 200
 
     except Exception as e:
