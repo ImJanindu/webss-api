@@ -18,7 +18,7 @@ def index():
         "message": "WebSS-API is running!"
     })
 
-@app.route('/<url>')
+@app.route('/<path:url>')
 def take_screenshot(url):
     try:
         chrome_options = Options()
@@ -31,7 +31,11 @@ def take_screenshot(url):
         service = Service(ChromeDriverManager().install())
         browser = webdriver.Chrome(service=service, options=chrome_options)
 
-        target_url = "https://" + url
+        if url.startswith("http://") or url.startswith("https://"):
+            target_url = url
+        else:
+            target_url = "https://" + url
+            
         browser.set_window_size(1920, 1080)
         browser.get(target_url)
         sleep(2)
