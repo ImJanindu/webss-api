@@ -20,19 +20,13 @@ GET http://localhost:5000/google.com
 ```
 
 **Response (Success - 200 OK):**
-```json
-{
-  "success": true,
-  "url": "https://google.com",
-  "image_url": "https://telegra.ph/file/example12345.png"
-}
-```
+The API will directly return the raw `image/png` file. The image will render seamlessly in your browser, frontend application, or HTML `<img>` tag.
 
 **Response (Error - 500 Internal Server Error):**
 ```json
 {
   "success": false,
-  "error": "Failed to capture screenshot or upload image.",
+  "error": "Failed to capture screenshot.",
   "details": "..."
 }
 ```

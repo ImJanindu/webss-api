@@ -1,11 +1,10 @@
 import os
 import sys
-import uuid
+import io
 from time import sleep
-import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_file
 
 app = Flask(__name__)
 
@@ -37,47 +36,23 @@ def take_screenshot(url):
         browser.get(target_url)
         sleep(2)
         
-        os.makedirs("screenshots", exist_ok=True)
-        screenshot_path = f"screenshots/screenshot_{uuid.uuid4().hex}.png"
-        browser.get_screenshot_as_file(screenshot_path)
-        
-        if not os.path.exists(screenshot_path) or os.path.getsize(screenshot_path) == 0:
-            raise Exception("Screenshot capture failed or file is empty.")
-
-        with open(screenshot_path, 'rb') as f:
-            # Catbox API requires 'reqtype' and 'fileToUpload'
-            upload_req = requests.post(
-                'https://catbox.moe/user/api.php', 
-                data={'reqtype': 'fileupload'},
-                files={'fileToUpload': f}
-            )
-            
+        # Capture screenshot directly to memory
+        image_data = browser.get_screenshot_as_png()
         browser.quit()
         
-        if os.path.exists(screenshot_path):
-            os.remove(screenshot_path)
-            
-        # Catbox returns the direct URL as plain text on success
-        if upload_req.status_code == 200 and upload_req.text.startswith("https://"):
-            image_url = upload_req.text
-        else:
-            raise Exception(f"Catbox upload failed: {upload_req.text}")
-            
-        return jsonify({
-            "success": True,
-            "url": target_url,
-            "image_url": image_url
-        }), 200
+        # Return the raw image file directly to the user
+        return send_file(
+            io.BytesIO(image_data),
+            mimetype='image/png'
+        )
 
     except Exception as e:
         if 'browser' in locals():
             browser.quit()
-        if 'screenshot_path' in locals() and os.path.exists(screenshot_path):
-            os.remove(screenshot_path)
             
         return jsonify({
             "success": False,
-            "error": "Failed to capture screenshot or upload image.",
+            "error": "Failed to capture screenshot.",
             "details": str(e)
         }), 500
 
