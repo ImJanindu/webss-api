@@ -87,10 +87,11 @@ If you are deploying this to an Amazon EC2 instance, you can use Docker to easil
 ### 1. Install System Dependencies & Docker
 Connect to your EC2 instance via SSH and run:
 ```bash
-sudo yum update -y
-sudo yum install -y docker git
-sudo service docker start
-sudo usermod -a -G docker ec2-user
+sudo apt update -y
+sudo apt install -y docker.io git
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -a -G docker ubuntu
 ```
 *(You may need to log out and log back in or run `newgrp docker` for the docker group permissions to apply.)*
 
