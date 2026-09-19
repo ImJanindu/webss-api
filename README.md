@@ -97,7 +97,7 @@ sudo usermod -a -G docker ubuntu
 
 ### 2. Setup Your Project & Run
 ```bash
-git clone https://github.com/your-username/webss-api.git
+git clone https://github.com/imjanindu/webss-api.git
 cd webss-api
 docker build -t webss-api .
 docker run -d -p 80:5000 --name webss-container webss-api
